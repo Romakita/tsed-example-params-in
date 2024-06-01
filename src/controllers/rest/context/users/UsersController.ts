@@ -1,15 +1,19 @@
 import {Controller, Inject} from "@tsed/di";
 import {Get} from "@tsed/schema";
-import {UsersServices} from "../../../../services/UsersServices";
+import {UsersService} from "../../../../services/UsersService";
+import {UserRolesController} from "./roles/UserRolesController";
 
-@Controller("/users")
+@Controller({
+  path: "/users",
+  children: [UserRolesController]
+})
 export class UsersController {
   @Inject()
-  protected usersService: UsersServices;
+  protected usersService: UsersService;
 
   @Get("/")
   getAll() {
     // call service to retrieve all users according to the $ctx.get('contextId')
-    return this.usersService.findAll()
+    return this.usersService.findAll();
   }
 }

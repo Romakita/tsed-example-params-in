@@ -1,10 +1,11 @@
 import {Middleware, UseBefore} from "@tsed/platform-middlewares";
 import {Context, PathParams} from "@tsed/platform-params";
 import {In, Integer, Minimum, number, Required} from "@tsed/schema";
-import {PlatformContext} from "@tsed/common";
-import {decorateMethodsOf, DecoratorParameters, decoratorTypeOf, DecoratorTypes, useDecorators} from "@tsed/core";
+import {GlobalProviders, PlatformContext} from "@tsed/common";
+import {decorateMethodsOf, DecoratorParameters, decoratorTypeOf, DecoratorTypes, Type, useDecorators} from "@tsed/core";
 import {ControllerOptions} from "@tsed/di/lib/types/common/decorators/controller";
 import {Controller} from "@tsed/di";
+import {useDecoratorRecursively} from "../utils/useDecoratorRecursively";
 
 @Middleware()
 export class ContextIdMiddleware {
@@ -19,9 +20,10 @@ export class ContextIdMiddleware {
   }
 }
 
+
 export function ContextController(options: ControllerOptions) {
-  options.children?.map((child) => {
-    return UseContextId()(child);
+  options.children?.forEach((child) => {
+    useDecoratorRecursively(child, UseContextId);
   });
 
   return useDecorators(
